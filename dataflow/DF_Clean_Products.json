@@ -1,0 +1,64 @@
+{
+	"name": "DF_Clean_Products",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Products_JSON",
+						"type": "DatasetReference"
+					},
+					"name": "SourceProductsJSON"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet1",
+						"type": "DatasetReference"
+					},
+					"name": "SinkProducts"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FlattenData"
+				},
+				{
+					"name": "FilterActive"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          status as string,",
+				"          count as integer,",
+				"          data as (ProductID as string, ProductName as string, Category as string, Supplier as string, UnitCost as double, IsActive as boolean)[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'singleDocument') ~> SourceProductsJSON",
+				"SourceProductsJSON foldDown(unroll(data, data),",
+				"     mapColumn(",
+				"          ProductID = data.ProductID,",
+				"          ProductName = data.ProductName,",
+				"          Category = data.Category,",
+				"          Supplier = data.Supplier,",
+				"          UnitCost = data.UnitCost,",
+				"          IsActive = data.IsActive",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> FlattenData",
+				"FlattenData filter(IsActive == true()) ~> FilterActive",
+				"FilterActive sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['products_active.parquet'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SinkProducts"
+			]
+		}
+	}
+}

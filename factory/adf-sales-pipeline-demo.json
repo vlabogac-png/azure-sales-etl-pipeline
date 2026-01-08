@@ -1,0 +1,9 @@
+{
+	"name": "adf-sales-pipeline-demo",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "72a9da5f-6f45-4788-b322-3cca4f492715",
+		"tenantId": "e5c27e10-2177-48d4-add9-d556b8a493e8"
+	}
+}

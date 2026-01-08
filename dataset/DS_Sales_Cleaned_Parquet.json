@@ -1,0 +1,21 @@
+{
+	"name": "DS_Sales_Cleaned_Parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_BlobStorage_Sales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sales_cleaned.parquet",
+				"container": "staging"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

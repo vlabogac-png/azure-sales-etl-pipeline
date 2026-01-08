@@ -1,0 +1,67 @@
+{
+	"name": "FilterNulls",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sales_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "SourceSalesCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sales_Cleaned_Parquet",
+						"type": "DatasetReference"
+					},
+					"name": "SinkStagingParquet"
+				}
+			],
+			"transformations": [
+				{
+					"name": "RemoveDuplicates"
+				},
+				{
+					"name": "FilterNulls"
+				},
+				{
+					"name": "AddLoadDate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SaleID as string,",
+				"          SaleDate as string,",
+				"          ProductID as string,",
+				"          CustomerID as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          TotalAmount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceSalesCSV",
+				"SourceSalesCSV aggregate(SaleID = first(SaleID),",
+				"          SaleDate = first(SaleDate),",
+				"          ProductID = first(ProductID),",
+				"          CustomerID = first(CustomerID),",
+				"          Quantity = first(Quantity),",
+				"          UnitPrice = first(UnitPrice),",
+				"          TotalAmount = first(TotalAmount)) ~> RemoveDuplicates",
+				"RemoveDuplicates filter(!isNull(CustomerID) && !isNull(Quantity)) ~> FilterNulls",
+				"FilterNulls derive(LoadDate = currentTimestamp()) ~> AddLoadDate",
+				"AddLoadDate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['sales_cleaned.parquet'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> SinkStagingParquet"
+			]
+		}
+	}
+}

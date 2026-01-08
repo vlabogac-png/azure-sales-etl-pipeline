@@ -1,0 +1,56 @@
+{
+	"name": "DS_Products_JSON",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_BlobStorage_Sales",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "products_api_response.json",
+				"container": "raw-data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"status": {
+					"type": "string"
+				},
+				"count": {
+					"type": "integer"
+				},
+				"data": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"ProductID": {
+								"type": "string"
+							},
+							"ProductName": {
+								"type": "string"
+							},
+							"Category": {
+								"type": "string"
+							},
+							"Supplier": {
+								"type": "string"
+							},
+							"UnitCost": {
+								"type": "number"
+							},
+							"IsActive": {
+								"type": "boolean"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
