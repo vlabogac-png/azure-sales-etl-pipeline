@@ -14,6 +14,10 @@
 		"LS_HTTP_ProductAPI_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://api.example.com"
+		},
+		"TR_OnNewFile_Sales_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e77665b4-c838-487e-a3f0-a8a69fac74a7/resourceGroups/rg-adf-sales-project/providers/Microsoft.Storage/storageAccounts/stgsalesdemovb"
 		}
 	},
 	"variables": {
@@ -609,6 +613,37 @@
 							]
 						}
 					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PL_Sales_ETL_Demo')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TR_OnNewFile_Sales')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PL_Sales_ETL_Demo",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/raw-data/blobs/raw/",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('TR_OnNewFile_Sales_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
 				}
 			},
 			"dependsOn": [

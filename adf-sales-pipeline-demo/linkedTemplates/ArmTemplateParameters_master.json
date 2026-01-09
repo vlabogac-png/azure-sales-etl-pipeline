@@ -11,6 +11,9 @@
 		"LS_HTTP_ProductAPI_properties_typeProperties_url": {
 			"value": "https://api.example.com"
 		},
+		"TR_OnNewFile_Sales_properties_typeProperties_scope": {
+			"value": "/subscriptions/e77665b4-c838-487e-a3f0-a8a69fac74a7/resourceGroups/rg-adf-sales-project/providers/Microsoft.Storage/storageAccounts/stgsalesdemovb"
+		},
 		"containerUri": {
 			"value": ""
 		},

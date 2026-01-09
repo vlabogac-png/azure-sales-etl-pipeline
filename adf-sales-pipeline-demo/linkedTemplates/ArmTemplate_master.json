@@ -15,6 +15,10 @@
 			"type": "string",
 			"defaultValue": "https://api.example.com"
 		},
+		"TR_OnNewFile_Sales_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/e77665b4-c838-487e-a3f0-a8a69fac74a7/resourceGroups/rg-adf-sales-project/providers/Microsoft.Storage/storageAccounts/stgsalesdemovb"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -47,6 +51,9 @@
 					},
 					"LS_HTTP_ProductAPI_properties_typeProperties_url": {
 						"value": "[parameters('LS_HTTP_ProductAPI_properties_typeProperties_url')]"
+					},
+					"TR_OnNewFile_Sales_properties_typeProperties_scope": {
+						"value": "[parameters('TR_OnNewFile_Sales_properties_typeProperties_scope')]"
 					}
 				}
 			},
