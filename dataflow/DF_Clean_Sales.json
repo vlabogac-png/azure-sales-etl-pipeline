@@ -1,5 +1,5 @@
 {
-	"name": "FilterNulls",
+	"name": "DF_Clean_Sales",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

@@ -4,9 +4,8 @@
 		"description": "End-to-End ETL for sales data",
 		"activities": [
 			{
-				"name": "Copy_Sales_to_Staging",
-				"description": "Copy raw sales data to staging area",
-				"type": "Copy",
+				"name": "Run Products Cleaning",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -17,49 +16,40 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+					"dataflow": {
+						"referenceName": "DF_Clean_Products",
+						"type": "DataFlowReference"
 					},
-					"sink": {
-						"type": "ParquetSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "FlattenHierarchy"
-						},
-						"formatSettings": {
-							"type": "ParquetWriteSettings"
-						}
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Run Sales Cleaning",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
 				},
-				"inputs": [
-					{
-						"referenceName": "DS_Sales_CSV",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "DS_Sales_Cleaned_Parquet",
-						"type": "DatasetReference"
-					}
-				]
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Clean_Sales",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
 			}
 		],
 		"annotations": [],
