@@ -244,7 +244,7 @@ Sink (Parquet)
 
 ## 👥 Team
 
-- **Entwickler:** [Dein Name]
+- **Entwickler:** Vladislav Bogac
 - **Projekt:** Azure Sales ETL Pipeline
 - **Datum:** Januar 2026
 
