@@ -266,12 +266,3 @@ Sink (Parquet)
 
 MIT License - siehe LICENSE Datei
 
----
-
-## 🎯 Roadmap
-
-- [ ] Customers Data Flow hinzufügen
-- [ ] Delta Lake Integration
-- [ ] Data Quality Checks
-- [ ] Power BI Integration
-- [ ] CI/CD Pipeline (Azure DevOps)
