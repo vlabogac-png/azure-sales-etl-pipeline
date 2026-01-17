@@ -1,14 +1,24 @@
-# .github/workflows/ci.yml
-   
-   name: CI Tests
-   on: [push]
-   
-   jobs:
-     test:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v2
-         - name: Validate JSON
-           run: |
-             echo "Validating ADF JSON files..."
-             # Add validation here
+name: Validate ADF
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Validate JSON Files
+        run: |
+          echo "Validating ADF JSON files..."
+          for file in pipeline/*.json dataflow/*.json dataset/*.json; do
+            if [ -f "$file" ]; then
+              python -m json.tool "$file" > /dev/null || exit 1
+              echo "✅ Valid: $file"
+            fi
+          done
+      
+      - name: Check for Secrets
+        run: |
+          echo "Checking for hardcoded secrets..."
+          ! grep -r "AccountKey=" linkedService/ && echo "✅ No secrets found"
