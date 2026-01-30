@@ -1,12 +1,12 @@
-# 🏭 Azure Sales ETL Pipeline
+# Azure Sales ETL Pipeline
 
-## 📋 Projekt-Übersicht
+## Projekt-Übersicht
 
 Automatisierte ETL-Pipeline zur Verarbeitung von Sales- und Product-Daten in Azure Data Factory.
 
 ---
 
-## 🏗️ Architektur
+## Architektur
 
 ```
 ┌─────────────────┐      ┌──────────────────┐      ┌─────────────────┐
@@ -20,7 +20,7 @@ Automatisierte ETL-Pipeline zur Verarbeitung von Sales- und Product-Daten in Azu
 
 ---
 
-## 📁 Datenquellen
+## Datenquellen
 
 ### Input (Blob Storage: `raw/`)
 | Datei | Format | Beschreibung |
@@ -37,7 +37,7 @@ Automatisierte ETL-Pipeline zur Verarbeitung von Sales- und Product-Daten in Azu
 
 ---
 
-## 🔧 Komponenten
+## Komponenten
 
 ### Linked Services
 - **LS_BlobStorage_Sales**: Azure Blob Storage Verbindung
@@ -103,7 +103,7 @@ Sink (Parquet)
 
 ---
 
-## ⚙️ Trigger
+## Trigger
 
 ### 1. Schedule Trigger
 - **Name:** TR_Daily_Sales_ETL
@@ -117,7 +117,7 @@ Sink (Parquet)
 
 ---
 
-## 📊 Monitoring
+## Monitoring
 
 ### Pipeline Runs
 - **Location:** ADF Studio → Monitor → Pipeline runs
@@ -133,7 +133,7 @@ Sink (Parquet)
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Voraussetzungen
 - Azure Subscription
@@ -173,7 +173,7 @@ Sink (Parquet)
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Debug Mode
 ```bash
@@ -185,13 +185,13 @@ Sink (Parquet)
 ```
 
 ### Validierung
-- ✅ Beide Activities: Status = Succeeded
-- ✅ Parquet-Dateien in `staging/` vorhanden
-- ✅ Keine Fehler im Output Log
+-  Beide Activities: Status = Succeeded
+-  Parquet-Dateien in `staging/` vorhanden
+-  Keine Fehler im Output Log
 
 ---
 
-## 📈 Performance
+##  Performance
 
 | Metrik | Wert |
 |--------|------|
@@ -202,7 +202,7 @@ Sink (Parquet)
 
 ---
 
-## 🔐 Security
+##  Security
 
 - **Managed Identity** für Storage-Zugriff
 - **Key Vault** für Secrets (empfohlen)
@@ -211,7 +211,7 @@ Sink (Parquet)
 
 ---
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Problem: Pipeline schlägt fehl
 **Lösung:**
@@ -234,7 +234,7 @@ Sink (Parquet)
 
 ---
 
-## 📚 Ressourcen
+##  Ressourcen
 
 - [Azure Data Factory Dokumentation](https://docs.microsoft.com/azure/data-factory/)
 - [Data Flow Best Practices](https://docs.microsoft.com/azure/data-factory/concepts-data-flow-performance)
@@ -242,25 +242,6 @@ Sink (Parquet)
 
 ---
 
-## 👥 Team
-
-- **Entwickler:** Vladislav Bogac
-- **Projekt:** Azure Sales ETL Pipeline
-- **Datum:** Januar 2026
-
----
-
-## 📝 Changelog
-
-### v1.0.0 (2026-01-09)
-- ✅ Initial Release
-- ✅ Sales & Products Data Flows
-- ✅ Pipeline mit Parallel Execution
-- ✅ Schedule Trigger
-- ✅ Monitoring & Alerts
-- ✅ Git Integration
-
----
 
 ## 📄 Lizenz
 
