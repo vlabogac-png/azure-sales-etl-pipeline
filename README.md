@@ -1,58 +1,63 @@
 # Azure Sales ETL Pipeline
 
-## Projekt-Übersicht
+## Project Overview
 
-Automatisierte ETL-Pipeline zur Verarbeitung von Sales- und Product-Daten in Azure Data Factory.
+Automated ETL pipeline for processing sales and product data in Azure Data Factory.
 
 ---
 
-## Architektur
+## Architecture
 
 ```
 ┌─────────────────┐      ┌──────────────────┐      ┌─────────────────┐
 │   Raw Data      │      │   Data Flows     │      │    Staging      │
 │   (Blob)        │─────>│   (Transform)    │─────>│   (Parquet)     │
 └─────────────────┘      └──────────────────┘      └─────────────────┘
-  • CSV/JSON              • Cleaning                 • Optimiert
-  • Unstrukturiert        • Filtering                • Komprimiert
-                          • Enrichment               • Partitioniert
+  • CSV/JSON              • Cleaning                 • Optimized
+  • Unstructured          • Filtering                • Compressed
+                          • Enrichment               • Partitioned
 ```
 
 ---
 
-## Datenquellen
+## Data Sources
 
 ### Input (Blob Storage: `raw/`)
-| Datei | Format | Beschreibung |
-|-------|--------|--------------|
-| `sales_data.csv` | CSV | Verkaufstransaktionen |
-| `products_api_response.json` | JSON | Produktkatalog (API Response) |
-| `customers_dimension.csv` | CSV | Kundenstammdaten |
+
+| File                         | Format | Description                    |
+| ---------------------------- | ------ | ------------------------------ |
+| `sales_data.csv`             | CSV    | Sales transactions             |
+| `products_api_response.json` | JSON   | Product catalog (API response) |
+| `customers_dimension.csv`    | CSV    | Customer master data           |
 
 ### Output (Blob Storage: `staging/`)
-| Datei | Format | Beschreibung |
-|-------|--------|--------------|
-| `sales_cleaned.parquet` | Parquet | Bereinigte Sales-Daten |
-| `products_active.parquet` | Parquet | Aktive Produkte (gefiltert) |
+
+| File                      | Format  | Description                |
+| ------------------------- | ------- | -------------------------- |
+| `sales_cleaned.parquet`   | Parquet | Cleaned sales data         |
+| `products_active.parquet` | Parquet | Active products (filtered) |
 
 ---
 
-## Komponenten
+## Components
 
 ### Linked Services
-- **LS_BlobStorage_Sales**: Azure Blob Storage Verbindung
+
+* **LS_BlobStorage_Sales**: Azure Blob Storage connection
 
 ### Datasets
-| Name | Typ | Pfad |
-|------|-----|------|
-| DS_Sales_CSV | DelimitedText | raw/sales_data.csv |
-| DS_Products_JSON | JSON | raw/products_api_response.json |
-| DS_Sales_Cleaned_Parquet | Parquet | staging/sales_cleaned.parquet |
-| Parquet1 | Parquet | staging/products_active.parquet |
+
+| Name                     | Type          | Path                            |
+| ------------------------ | ------------- | ------------------------------- |
+| DS_Sales_CSV             | DelimitedText | raw/sales_data.csv              |
+| DS_Products_JSON         | JSON          | raw/products_api_response.json  |
+| DS_Sales_Cleaned_Parquet | Parquet       | staging/sales_cleaned.parquet   |
+| Parquet1                 | Parquet       | staging/products_active.parquet |
 
 ### Data Flows
 
 #### 1. DF_Clean_Sales
+
 ```
 Source (CSV)
     ↓
@@ -65,12 +70,14 @@ AddLoadDate (Derived Column: currentTimestamp())
 Sink (Parquet)
 ```
 
-**Transformationen:**
-- Duplikate entfernen (basierend auf order_id)
-- Null-Werte in kritischen Feldern filtern
-- Load-Timestamp hinzufügen
+**Transformations:**
+
+* Remove duplicates (based on order_id)
+* Filter null values in critical fields
+* Add load timestamp
 
 #### 2. DF_Clean_Products
+
 ```
 Source (JSON)
     ↓
@@ -81,14 +88,16 @@ FilterActive (Filter: status == 'active')
 Sink (Parquet)
 ```
 
-**Transformationen:**
-- JSON-Struktur flatten
-- Nur aktive Produkte behalten
-- Parquet-Optimierung
+**Transformations:**
+
+* Flatten JSON structure
+* Keep only active products
+* Parquet optimization
 
 ### Pipeline
 
 **PL_Sales_ETL_Demo**
+
 ```
 ┌──────────────────────────┐
 │ Run Sales Cleaning       │  (parallel)
@@ -99,151 +108,163 @@ Sink (Parquet)
 └──────────────────────────┘
 ```
 
-**Execution:** Beide Data Flows laufen parallel für maximale Performance
+**Execution:** Both data flows run in parallel for maximum performance
 
 ---
 
-## Trigger
+## Triggers
 
 ### 1. Schedule Trigger
-- **Name:** TR_Daily_Sales_ETL
-- **Frequenz:** Täglich um 02:00 Uhr
-- **Zweck:** Regelmäßige Datenverarbeitung
+
+* **Name:** TR_Daily_Sales_ETL
+* **Frequency:** Daily at 02:00
+* **Purpose:** Regular data processing
 
 ### 2. Event Trigger (optional)
-- **Name:** TR_OnNewFile_Sales
-- **Event:** Neue Datei in `raw/` Ordner
-- **Zweck:** Echtzeit-Verarbeitung bei Upload
+
+* **Name:** TR_OnNewFile_Sales
+* **Event:** New file in `raw/` folder
+* **Purpose:** Real-time processing on upload
 
 ---
 
 ## Monitoring
 
 ### Pipeline Runs
-- **Location:** ADF Studio → Monitor → Pipeline runs
-- **Metriken:**
-  - Success Rate
-  - Average Duration
-  - Failed Runs
+
+* **Location:** ADF Studio → Monitor → Pipeline runs
+* **Metrics:**
+
+  * Success rate
+  * Average duration
+  * Failed runs
 
 ### Alerts
-- **Email-Benachrichtigung** bei Pipeline-Fehler
-- **Azure Monitor** Integration
-- **Logic App** für erweiterte Notifications
+
+* **Email notification** on pipeline failure
+* **Azure Monitor** integration
+* **Logic App** for advanced notifications
 
 ---
 
 ## Deployment
 
-### Voraussetzungen
-- Azure Subscription
-- Azure Data Factory Instance
-- Azure Blob Storage Account
-- Git Repository (GitHub)
+### Prerequisites
 
-### Setup-Schritte
+* Azure subscription
+* Azure Data Factory instance
+* Azure Blob Storage account
+* Git repository (GitHub)
 
-1. **Repository klonen:**
+### Setup Steps
+
+1. **Clone repository:**
+
    ```bash
    git clone https://github.com/[username]/azure-sales-etl-pipeline.git
    ```
 
-2. **ADF mit Git verbinden:**
-   - ADF Studio → Manage → Git configuration
-   - Repository: azure-sales-etl-pipeline
-   - Branch: main
+2. **Connect ADF with Git:**
 
-3. **Linked Service konfigurieren:**
-   - Update `LS_BlobStorage_Sales` mit deinem Storage Account
-   - Connection String anpassen
+   * ADF Studio → Manage → Git configuration
+   * Repository: azure-sales-etl-pipeline
+   * Branch: main
 
-4. **Testdaten hochladen:**
+3. **Configure linked service:**
+
+   * Update `LS_BlobStorage_Sales` with your storage account
+   * Adjust connection string
+
+4. **Upload test data:**
+
    ```bash
    az storage blob upload-batch      --account-name <storage-account>      --destination <container>/raw      --source ./sample-data
    ```
 
-5. **Pipeline testen:**
-   - Debug ausführen
-   - Output prüfen
-   - Staging-Dateien validieren
+5. **Test pipeline:**
+
+   * Run debug
+   * Check output
+   * Validate staging files
 
 6. **Publish:**
-   - Validate all
-   - Publish all
+
+   * Validate all
+   * Publish all
 
 ---
 
 ## Testing
 
 ### Debug Mode
+
 ```bash
 # In ADF Studio
-1. Öffne Pipeline: PL_Sales_ETL_Demo
-2. Klicke "Debug"
-3. Warte auf Completion (~3-5 Min)
-4. Prüfe Output Tab
+1. Open pipeline: PL_Sales_ETL_Demo
+2. Click "Debug"
+3. Wait for completion (~3–5 min)
+4. Check Output tab
 ```
 
-### Validierung
--  Beide Activities: Status = Succeeded
--  Parquet-Dateien in `staging/` vorhanden
--  Keine Fehler im Output Log
+### Validation
+
+* Both activities: Status = Succeeded
+* Parquet files present in `staging/`
+* No errors in output log
 
 ---
 
-##  Performance
+## Performance
 
-| Metrik | Wert |
-|--------|------|
-| Durchschnittliche Laufzeit | 3-5 Minuten |
-| Parallelisierung | 2 Data Flows gleichzeitig |
-| Compute Size | Small (4 vCores) |
-| Datenvolumen | ~1-10 MB (Test), skalierbar |
-
----
-
-##  Security
-
-- **Managed Identity** für Storage-Zugriff
-- **Key Vault** für Secrets (empfohlen)
-- **RBAC** für ADF-Zugriff
-- **Private Endpoints** (optional, für Prod)
+| Metric          | Value                       |
+| --------------- | --------------------------- |
+| Average runtime | 3–5 minutes                 |
+| Parallelization | 2 data flows simultaneously |
+| Compute size    | Small (4 vCores)            |
+| Data volume     | ~1–10 MB (test), scalable   |
 
 ---
 
-##  Troubleshooting
+## Security
 
-### Problem: Pipeline schlägt fehl
-**Lösung:**
-1. Monitor → Pipeline runs → Klick auf Failed run
-2. Prüfe Error Message
-3. Validiere Input-Daten
-4. Prüfe Linked Service Connection
-
-### Problem: Parquet-Dateien fehlen
-**Lösung:**
-1. Prüfe Sink-Konfiguration im Data Flow
-2. Validiere Storage Account Permissions
-3. Prüfe Container & Pfad
-
-### Problem: Data Flow langsam
-**Lösung:**
-1. Erhöhe Compute Size (Medium/Large)
-2. Aktiviere Partitioning
-3. Optimiere Transformationen
+* **Managed identity** for storage access
+* **Key Vault** for secrets (recommended)
+* **RBAC** for ADF access
+* **Private endpoints** (optional, for prod)
 
 ---
 
-##  Ressourcen
+## Troubleshooting
 
-- [Azure Data Factory Dokumentation](https://docs.microsoft.com/azure/data-factory/)
-- [Data Flow Best Practices](https://docs.microsoft.com/azure/data-factory/concepts-data-flow-performance)
-- [Parquet Format Guide](https://parquet.apache.org/docs/)
+### Issue: Pipeline fails
+
+**Solution:**
+
+1. Monitor → Pipeline runs → Click on failed run
+2. Check error message
+3. Validate input data
+4. Check linked service connection
+
+### Issue: Parquet files missing
+
+**Solution:**
+
+1. Check sink configuration in data flow
+2. Validate storage account permissions
+3. Check container & path
+
+### Issue: Data flow is slow
+
+**Solution:**
+
+1. Increase compute size (Medium/Large)
+2. Enable partitioning
+3. Optimize transformations
 
 ---
 
+## Resources
 
-## 📄 Lizenz
-
-MIT License - siehe LICENSE Datei
-
+* [Azure Data Factory Documentation](https://docs.microsoft.com/azure/data-factory/)
+* [Data Flow Best Practices](https://docs.microsoft.com/azure/data-factory/concepts-data-flow-performance)
+* [Parquet Format Guide](https://parquet.apache.org/docs/)
